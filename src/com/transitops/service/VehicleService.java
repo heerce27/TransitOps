@@ -1,72 +1,64 @@
-package service;
+package com.transitops.service;
 
-import dao.VehicleDAO;
-import model.Vehicle;
-
-import java.sql.SQLException;
-import java.time.LocalDate;
+import com.transitops.model.Vehicle;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VehicleService {
+    private final Path vehiclesFile;
 
-    private final VehicleDAO vehicleDAO = new VehicleDAO();
-
-    public List<Vehicle> getAllVehicles() throws SQLException {
-        return vehicleDAO.getAllVehicles();
+    public VehicleService() {
+        this(Path.of("data", "vehicles.txt"));
     }
 
-    public Vehicle getVehicleById(int vehicleId) throws SQLException {
-        return vehicleDAO.getVehicleById(vehicleId);
+    public VehicleService(Path vehiclesFile) {
+        this.vehiclesFile = vehiclesFile;
     }
 
-    public int createVehicle(Vehicle vehicle) throws SQLException {
-        validate(vehicle, null);
-        if (vehicle.getStatus() == null || vehicle.getStatus().isBlank()) {
-            vehicle.setStatus("ACTIVE");
+    public List<Vehicle> loadVehicles() {
+        try {
+            if (!Files.exists(vehiclesFile)) {
+                Files.createDirectories(vehiclesFile.getParent());
+                Files.createFile(vehiclesFile);
+                return new ArrayList<>();
+            }
+
+            List<String> lines = Files.readAllLines(vehiclesFile, StandardCharsets.UTF_8);
+            List<Vehicle> vehicles = new ArrayList<>();
+            for (String line : lines) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+                String[] parts = line.split("\\|", 6);
+                if (parts.length == 6) {
+                    vehicles.add(new Vehicle(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]));
+                }
+            }
+            return vehicles;
+        } catch (IOException e) {
+            return new ArrayList<>();
         }
-        return vehicleDAO.addVehicle(vehicle);
     }
 
-    public boolean updateVehicle(Vehicle vehicle) throws SQLException {
-        validate(vehicle, vehicle.getVehicleId());
-        return vehicleDAO.updateVehicle(vehicle);
+    public void addVehicle(String registration, String name, String model, String type, String capacity, String status) {
+        List<Vehicle> vehicles = loadVehicles();
+        vehicles.add(new Vehicle(registration, name, model, type, capacity, status));
+        saveVehicles(vehicles);
     }
 
-    public boolean deleteVehicle(int vehicleId) throws SQLException {
-        return vehicleDAO.deleteVehicle(vehicleId);
-    }
-
-    /** Days remaining until insurance expiry. Negative means already expired. */
-    public long daysUntilInsuranceExpiry(Vehicle vehicle) {
-        return LocalDate.now().until(vehicle.getInsuranceExpiry(), java.time.temporal.ChronoUnit.DAYS);
-    }
-
-    /** Days remaining until fitness certificate expiry. Negative means already expired. */
-    public long daysUntilFitnessExpiry(Vehicle vehicle) {
-        return LocalDate.now().until(vehicle.getFitnessExpiry(), java.time.temporal.ChronoUnit.DAYS);
-    }
-
-    private void validate(Vehicle vehicle, Integer excludeId) throws SQLException {
-        if (vehicle.getVehicleNumber() == null || vehicle.getVehicleNumber().isBlank()) {
-            throw new IllegalArgumentException("Vehicle number is required.");
-        }
-        if (vehicle.getVehicleType() == null || vehicle.getVehicleType().isBlank()) {
-            throw new IllegalArgumentException("Vehicle type is required.");
-        }
-        if (vehicle.getMake() == null || vehicle.getMake().isBlank()) {
-            throw new IllegalArgumentException("Make is required.");
-        }
-        if (vehicle.getCapacity() <= 0) {
-            throw new IllegalArgumentException("Capacity must be greater than zero.");
-        }
-        if (vehicle.getInsuranceExpiry() == null) {
-            throw new IllegalArgumentException("Insurance expiry date is required.");
-        }
-        if (vehicle.getFitnessExpiry() == null) {
-            throw new IllegalArgumentException("Fitness certificate expiry date is required.");
-        }
-        if (vehicleDAO.isVehicleNumberTaken(vehicle.getVehicleNumber(), excludeId)) {
-            throw new IllegalArgumentException("Vehicle number already exists in the fleet.");
+    private void saveVehicles(List<Vehicle> vehicles) {
+        try {
+            Files.createDirectories(vehiclesFile.getParent());
+            List<String> lines = new ArrayList<>();
+            for (Vehicle vehicle : vehicles) {
+                lines.add(String.join("|", vehicle.getRegistrationNumber(), vehicle.getName(), vehicle.getModel(), vehicle.getType(), vehicle.getCapacity(), vehicle.getStatus()));
+            }
+            Files.write(vehiclesFile, lines, StandardCharsets.UTF_8);
+        } catch (IOException ignored) {
         }
     }
 }

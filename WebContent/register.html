@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TransitOps Register</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <div class="hero-card auth-card">
+      <span class="eyebrow">Create account</span>
+      <h1>Join TransitOps</h1>
+      <p>Create your account and access the fleet dashboard.</p>
+      {{MESSAGE}}
+      <form action="/register" method="post" class="panel">
+        <div class="form-grid">
+          <div>
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" name="fullName" required>
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+          <div>
+            <label for="role">Role</label>
+            <select id="role" name="role">
+              <option>Fleet Manager</option>
+              <option>Driver</option>
+              <option>Safety Officer</option>
+              <option>Financial Analyst</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="submit" class="btn-primary">Register</button>
+          <a class="btn-secondary" href="/login">Back to Login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

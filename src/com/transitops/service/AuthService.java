@@ -1,25 +1,24 @@
 package com.transitops.service;
 
 import com.transitops.model.User;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
 
 public class AuthService {
-    private final List<User> users = new ArrayList<>();
+    private final UserService userService;
 
     public AuthService() {
-        users.add(new User("fleetmanager@transitops.com", "Fleet@2026", "Amina Khan", "Fleet Manager"));
-        users.add(new User("driver@transitops.com", "Driver@2026", "Daniel Cruz", "Driver"));
-        users.add(new User("safety@transitops.com", "Safety@2026", "Nadia Brooks", "Safety Officer"));
-        users.add(new User("analyst@transitops.com", "Analyst@2026", "Samir Hassan", "Financial Analyst"));
+        this(Path.of("data", "users.txt"));
+    }
+
+    public AuthService(Path usersFile) {
+        this.userService = new UserService(usersFile);
     }
 
     public User authenticate(String email, String password) {
-        for (User user : users) {
-            if (user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)) {
-                return user;
-            }
-        }
-        return null;
+        return userService.authenticate(email, password);
+    }
+
+    public User register(String fullName, String email, String password, String role) {
+        return userService.register(fullName, email, password, role);
     }
 }

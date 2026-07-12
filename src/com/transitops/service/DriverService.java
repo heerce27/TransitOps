@@ -1,73 +1,64 @@
 package com.transitops.service;
 
 import com.transitops.model.Driver;
-
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DriverService {
-
-    private final List<Driver> drivers;
+    private final Path driversFile;
 
     public DriverService() {
-
-        drivers = new ArrayList<>();
-
-        drivers.add(new Driver(
-                "Alex Johnson",
-                "DL12345678",
-                "HMV",
-                "2027-12-20",
-                "9876543210",
-                92,
-                "Available"
-        ));
-
-        drivers.add(new Driver(
-                "Rahul Sharma",
-                "DL87654321",
-                "LMV",
-                "2028-05-15",
-                "9876501234",
-                88,
-                "Off Duty"
-        ));
+        this(Path.of("data", "drivers.txt"));
     }
 
-    public List<Driver> getAllDrivers() {
-        return drivers;
+    public DriverService(Path driversFile) {
+        this.driversFile = driversFile;
     }
 
-    public void addDriver(Driver driver) {
-        drivers.add(driver);
-    }
-
-    public boolean deleteDriver(String licenseNumber) {
-
-        for (Driver driver : drivers) {
-
-            if (driver.getLicenseNumber()
-                    .equalsIgnoreCase(licenseNumber)) {
-
-                drivers.remove(driver);
-                return true;
+    public List<Driver> loadDrivers() {
+        try {
+            if (!Files.exists(driversFile)) {
+                Files.createDirectories(driversFile.getParent());
+                Files.createFile(driversFile);
+                return new ArrayList<>();
             }
-        }
 
-        return false;
+            List<String> lines = Files.readAllLines(driversFile, StandardCharsets.UTF_8);
+            List<Driver> drivers = new ArrayList<>();
+            for (String line : lines) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+                String[] parts = line.split("\\|", 4);
+                if (parts.length == 4) {
+                    drivers.add(new Driver(parts[0], parts[1], parts[2], parts[3]));
+                }
+            }
+            return drivers;
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
     }
 
-    public Driver findDriver(String licenseNumber) {
+    public void addDriver(String name, String license, String phone, String status) {
+        List<Driver> drivers = loadDrivers();
+        drivers.add(new Driver(name, license, phone, status));
+        saveDrivers(drivers);
+    }
 
-        for (Driver driver : drivers) {
-
-            if (driver.getLicenseNumber()
-                    .equalsIgnoreCase(licenseNumber)) {
-
-                return driver;
+    private void saveDrivers(List<Driver> drivers) {
+        try {
+            Files.createDirectories(driversFile.getParent());
+            List<String> lines = new ArrayList<>();
+            for (Driver driver : drivers) {
+                lines.add(String.join("|", driver.getName(), driver.getLicenseNumber(), driver.getPhoneNumber(), driver.getStatus()));
             }
+            Files.write(driversFile, lines, StandardCharsets.UTF_8);
+        } catch (IOException ignored) {
         }
-
-        return null;
     }
 }
