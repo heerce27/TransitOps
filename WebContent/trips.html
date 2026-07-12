@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TransitOps Trips</title>
+</head>
+<body>
+  <h1>Trip Management</h1>
+  <p>Welcome, {{USER_NAME}}</p>
+  <p>Role: {{USER_ROLE}}</p>
+  <p>Email: {{USER_EMAIL}}</p>
+  <p><a href="/dashboard">Back to Dashboard</a> | <a href="/logout">Logout</a></p>
+
+  <h2>Create Trip</h2>
+  {{MESSAGE}}
+
+  <form action="/trips" method="post">
+    <label>Route</label><br>
+    <input type="text" name="route" required><br><br>
+
+    <label>Vehicle</label><br>
+    <input type="text" name="vehicle" required><br><br>
+
+    <label>Driver</label><br>
+    <input type="text" name="driver"><br><br>
+
+    <label>Status</label><br>
+    <select name="status">
+      <option value="Scheduled">Scheduled</option>
+      <option value="Dispatched">Dispatched</option>
+      <option value="Completed">Completed</option>
+    </select><br><br>
+
+    <button type="submit">Save Trip</button>
+  </form>
+
+  <h2>Trip Records</h2>
+  <ul>
+    {{TRIP_LIST}}
+  </ul>
+</body>
+</html>
