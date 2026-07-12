@@ -4,76 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TransitOps Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>TransitOps Dashboard</h1>
-  <p>Welcome, {{USER_NAME}}</p>
-  <p>Role: {{USER_ROLE}}</p>
-  <p>Email: {{USER_EMAIL}}</p>
-  <p><a href="/logout">Logout</a></p>
+  <div class="page-shell">
+    <div class="hero-card">
+      <span class="eyebrow">Operations overview</span>
+      <h1>TransitOps Dashboard</h1>
+      <p>Welcome, {{USER_NAME}}</p>
+      <p>Role: {{USER_ROLE}}</p>
+      <p>Email: {{USER_EMAIL}}</p>
+      <div class="hero-actions">
+        <a class="btn-secondary" href="login.html">Logout</a>
+      </div>
+    </div>
 
-  <h2>Fleet Overview</h2>
-  <ul>
-    <li>Active vehicles: 24</li>
-    <li>Available vehicles: 11</li>
-    <li>Vehicles in maintenance: 3</li>
-    <li>Active trips: 8</li>
-    <li>Pending trips: 4</li>
-    <li>Drivers on duty: 12</li>
-  </ul>
+    <div class="grid">
+      <div class="summary-card"><h3>Active Vehicles</h3><h2>24</h2></div>
+      <div class="summary-card"><h3>Available Vehicles</h3><h2>11</h2></div>
+      <div class="summary-card"><h3>Vehicles in Maintenance</h3><h2>3</h2></div>
+      <div class="summary-card"><h3>Active Trips</h3><h2>8</h2></div>
+    </div>
 
-  <h2>Dashboard Features</h2>
-  <ul>
-    <li>KPI cards for fleet performance</li>
-    <li>Interactive charts and analytics</li>
-    <li>Vehicle type filter</li>
-    <li>Region filter</li>
-    <li>Operational cost summary</li>
-  </ul>
+    <div class="panel">
+      <h2>Fleet Overview</h2>
+      <ul>
+        <li>Active vehicles: 24</li>
+        <li>Available vehicles: 11</li>
+        <li>Vehicles in maintenance: 3</li>
+        <li>Active trips: 8</li>
+        <li>Pending trips: 4</li>
+        <li>Drivers on duty: 12</li>
+      </ul>
+    </div>
 
-  <h2>System Modules</h2>
-  <ul>
-    <li>Authentication</li>
-    <li>Dashboard</li>
-    <li>Vehicle Management</li>
-    <li>Driver Management</li>
-    <li>Trip Management</li>
-    <li>Maintenance Management</li>
-    <li>Fuel Management</li>
-    <li>Expense Management</li>
-    <li>Reports and Analytics</li>
-  </ul>
+    <div class="panel">
+      <h2>Quick Actions</h2>
+      <ul>
+        <li><a href="vehicles.html">Add Vehicle</a></li>
+        <li><a href="drivers.html">Add Driver</a></li>
+        <li><a href="trips.html">Create Trip</a></li>
+        <li><a href="maintenance.html">Schedule Maintenance</a></li>
+        <li><a href="expenses.html">Log Expense</a></li>
+      </ul>
+    </div>
 
-  <h2>Quick Actions</h2>
-  <ul>
-    <li>Add Vehicle</li>
-    <li>Add Driver</li>
-    <li>Create Trip</li>
-    <li><a href="/maintenance">Schedule Maintenance</a></li>
-    <li>Record Fuel Entry</li>
-    <li>Log Expense</li>
-  </ul>
-
-  <h2>Recent Activity</h2>
-  <table>
-    <tr>
-      <th>Trip</th>
-      <th>Status</th>
-      <th>Driver</th>
-    </tr>
-    <tr>
-      <td>Trip #101</td>
-      <td>Dispatched</td>
-      <td>Daniel Cruz</td>
-    </tr>
-    <tr>
-      <td>Trip #102</td>
-      <td>Completed</td>
-      <td>Nadia Brooks</td>
-    </tr>
-  </table>
-
-  <h2>Ready for Styling</h2>
-  <p>These sections are listed here so CSS can later turn them into cards, panels, buttons, and charts.</p>
+    <div class="panel">
+      <h2>Recent Activity</h2>
+      <table>
+        <tr><th>Trip</th><th>Status</th><th>Driver</th></tr>
+        <tr><td>Trip #101</td><td>Dispatched</td><td>Daniel Cruz</td></tr>
+        <tr><td>Trip #102</td><td>Completed</td><td>Nadia Brooks</td></tr>
+      </table>
+    </div>
+  </div>
 </body>
 </html>

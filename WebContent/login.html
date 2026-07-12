@@ -4,28 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TransitOps Login</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>TransitOps</h1>
-  <h2>Smart Transport Operations Platform</h2>
-  <p>Please sign in to continue.</p>
+  <div class="page-shell">
+    <div class="hero-card" style="max-width: 680px; margin: 2rem auto;">
+      <span class="eyebrow">Secure access</span>
+      <h1>TransitOps</h1>
+      <h2>Smart Transport Operations Platform</h2>
+      <p>Please sign in to continue and manage your fleet operations from one place.</p>
 
-  <form action="/login" method="post">
-    <label for="email">Email</label><br>
-    <input type="email" id="email" name="email" required><br><br>
+      <form action="/login" method="post" class="panel" style="padding: 1.2rem;">
+        <div class="form-grid">
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="submit" class="btn-primary">Login</button>
+        </div>
+      </form>
 
-    <label for="password">Password</label><br>
-    <input type="password" id="password" name="password" required><br><br>
-
-    <button type="submit">Login</button>
-  </form>
-
-  <p>Demo accounts:</p>
-  <ul>
-    <li>fleetmanager@transitops.com / Fleet@2026</li>
-    <li>driver@transitops.com / Driver@2026</li>
-    <li>safety@transitops.com / Safety@2026</li>
-    <li>analyst@transitops.com / Analyst@2026</li>
-  </ul>
+      <div class="panel">
+        <h3>Demo accounts</h3>
+        <ul>
+          <li>fleetmanager@transitops.com / Fleet@2026</li>
+          <li>driver@transitops.com / Driver@2026</li>
+          <li>safety@transitops.com / Safety@2026</li>
+          <li>analyst@transitops.com / Analyst@2026</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

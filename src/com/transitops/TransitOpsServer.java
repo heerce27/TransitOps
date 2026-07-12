@@ -26,14 +26,17 @@ public class TransitOpsServer {
     private static final Map<String, User> SESSIONS = new HashMap<>();
     private static final AuthService AUTH_SERVICE = new AuthService();
     private static final List<MaintenanceRecord> MAINTENANCE_RECORDS = new ArrayList<>();
+    private static final List<TripRecord> TRIP_RECORDS = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/", new StaticFileHandler("index.html"));
+        server.createContext("/index.html", new StaticFileHandler("index.html"));
         server.createContext("/login", new LoginHandler());
         server.createContext("/dashboard", new DashboardHandler());
 server.createContext("/maintenance", new MaintenanceHandler());
 server.createContext("/fuel", new StaticFileHandler("fuel.html"));
+server.createContext("/trips", new TripHandler());
         server.createContext("/logout", new LogoutHandler());
         server.setExecutor(null);
         server.start();
@@ -169,6 +172,56 @@ server.createContext("/fuel", new StaticFileHandler("fuel.html"));
         }
     }
 
+    private static class TripHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            User user = getAuthenticatedUser(exchange);
+            if (user == null) {
+                exchange.getResponseHeaders().add("Location", "/login");
+                sendText(exchange, 303, "Please log in first");
+                return;
+            }
+
+            if ("GET".equals(exchange.getRequestMethod())) {
+                String html = Files.readString(WEB_ROOT.resolve("trips.html"));
+                html = html.replace("{{USER_NAME}}", user.getName())
+                        .replace("{{USER_ROLE}}", user.getRole())
+                        .replace("{{USER_EMAIL}}", user.getEmail())
+                        .replace("{{MESSAGE}}", "")
+                        .replace("{{TRIP_LIST}}", buildTripList());
+                sendText(exchange, 200, html);
+                return;
+            }
+
+            if ("POST".equals(exchange.getRequestMethod())) {
+                Map<String, String> form = readForm(exchange);
+                String route = form.getOrDefault("route", "").trim();
+                String vehicle = form.getOrDefault("vehicle", "").trim();
+                String driver = form.getOrDefault("driver", "").trim();
+                String status = form.getOrDefault("status", "Scheduled").trim();
+
+                String message;
+                if (route.isEmpty() || vehicle.isEmpty()) {
+                    message = "<p>Please enter at least the route and vehicle.</p>";
+                } else {
+                    TRIP_RECORDS.add(new TripRecord(route, vehicle, driver, status));
+                    message = "<p>Trip saved successfully.</p>";
+                }
+
+                String html = Files.readString(WEB_ROOT.resolve("trips.html"));
+                html = html.replace("{{USER_NAME}}", user.getName())
+                        .replace("{{USER_ROLE}}", user.getRole())
+                        .replace("{{USER_EMAIL}}", user.getEmail())
+                        .replace("{{MESSAGE}}", message)
+                        .replace("{{TRIP_LIST}}", buildTripList());
+                sendText(exchange, 200, html);
+                return;
+            }
+
+            sendText(exchange, 405, "Method not allowed");
+        }
+    }
+
     private static class LogoutHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -200,6 +253,26 @@ server.createContext("/fuel", new StaticFileHandler("fuel.html"));
                     .append(escapeHtml(record.title))
                     .append(" | Date: ")
                     .append(escapeHtml(record.date))
+                    .append(" | Status: ")
+                    .append(escapeHtml(record.status))
+                    .append("</li>");
+        }
+        return builder.toString();
+    }
+
+    private static String buildTripList() {
+        if (TRIP_RECORDS.isEmpty()) {
+            return "<li>No trips recorded yet.</li>";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (TripRecord record : TRIP_RECORDS) {
+            builder.append("<li>")
+                    .append(escapeHtml(record.route))
+                    .append(" | Vehicle: ")
+                    .append(escapeHtml(record.vehicle))
+                    .append(" | Driver: ")
+                    .append(escapeHtml(record.driver))
                     .append(" | Status: ")
                     .append(escapeHtml(record.status))
                     .append("</li>");
@@ -285,6 +358,20 @@ server.createContext("/fuel", new StaticFileHandler("fuel.html"));
             this.title = title;
             this.date = date;
             this.description = description;
+            this.status = status;
+        }
+    }
+
+    private static class TripRecord {
+        private final String route;
+        private final String vehicle;
+        private final String driver;
+        private final String status;
+
+        private TripRecord(String route, String vehicle, String driver, String status) {
+            this.route = route;
+            this.vehicle = vehicle;
+            this.driver = driver;
             this.status = status;
         }
     }
