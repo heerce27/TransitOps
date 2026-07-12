@@ -10,52 +10,37 @@
   <div class="page-shell">
     <div class="hero-card">
       <span class="eyebrow">Operations overview</span>
-      <h1>TransitOps Dashboard</h1>
-      <p>Welcome, {{USER_NAME}}</p>
-      <p>Role: {{USER_ROLE}}</p>
-      <p>Email: {{USER_EMAIL}}</p>
+      <h1>Welcome back, {{USER_NAME}}</h1>
+      <p>{{USER_ROLE}} • {{USER_EMAIL}}</p>
       <div class="hero-actions">
-        <a class="btn-secondary" href="login.html">Logout</a>
+        <a class="btn-primary" href="/logout">Logout</a>
       </div>
     </div>
 
     <div class="grid">
-      <div class="summary-card"><h3>Active Vehicles</h3><h2>24</h2></div>
-      <div class="summary-card"><h3>Available Vehicles</h3><h2>11</h2></div>
-      <div class="summary-card"><h3>Vehicles in Maintenance</h3><h2>3</h2></div>
-      <div class="summary-card"><h3>Active Trips</h3><h2>8</h2></div>
+      <div class="card"><h3>Active Vehicles</h3><p class="stat-value">24</p></div>
+      <div class="card"><h3>Available Vehicles</h3><p class="stat-value">11</p></div>
+      <div class="card"><h3>Vehicles in Maintenance</h3><p class="stat-value">3</p></div>
+      <div class="card"><h3>Drivers On Duty</h3><p class="stat-value">12</p></div>
     </div>
 
     <div class="panel">
-      <h2>Fleet Overview</h2>
-      <ul>
-        <li>Active vehicles: 24</li>
-        <li>Available vehicles: 11</li>
-        <li>Vehicles in maintenance: 3</li>
-        <li>Active trips: 8</li>
-        <li>Pending trips: 4</li>
-        <li>Drivers on duty: 12</li>
-      </ul>
-    </div>
-
-    <div class="panel">
-      <h2>Quick Actions</h2>
-      <ul>
-        <li><a href="vehicles.html">Add Vehicle</a></li>
-        <li><a href="drivers.html">Add Driver</a></li>
-        <li><a href="trips.html">Create Trip</a></li>
-        <li><a href="maintenance.html">Schedule Maintenance</a></li>
-        <li><a href="expenses.html">Log Expense</a></li>
-      </ul>
+      <h2>Featured Modules</h2>
+      <div class="feature-grid">
+        <a class="feature-card" href="/vehicles">Vehicles</a>
+        <a class="feature-card" href="/drivers">Drivers</a>
+        <a class="feature-card" href="/trips">Trips</a>
+        <a class="feature-card" href="/maintenance">Maintenance</a>
+      </div>
     </div>
 
     <div class="panel">
       <h2>Recent Activity</h2>
-      <table>
-        <tr><th>Trip</th><th>Status</th><th>Driver</th></tr>
-        <tr><td>Trip #101</td><td>Dispatched</td><td>Daniel Cruz</td></tr>
-        <tr><td>Trip #102</td><td>Completed</td><td>Nadia Brooks</td></tr>
-      </table>
+      <ul>
+        <li>Trip #101 dispatched to the northern corridor</li>
+        <li>Vehicle V-204 moved to maintenance queue</li>
+        <li>Driver Amina completed the morning dispatch</li>
+      </ul>
     </div>
   </div>
 </body>

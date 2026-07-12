@@ -8,13 +8,13 @@
 </head>
 <body>
   <div class="page-shell">
-    <div class="hero-card" style="max-width: 680px; margin: 2rem auto;">
+    <div class="hero-card auth-card">
       <span class="eyebrow">Secure access</span>
       <h1>TransitOps</h1>
       <h2>Smart Transport Operations Platform</h2>
-      <p>Please sign in to continue and manage your fleet operations from one place.</p>
-
-      <form action="/login" method="post" class="panel" style="padding: 1.2rem;">
+      <p>Sign in with your registered account to manage vehicles, drivers, trips, maintenance, and more.</p>
+      {{MESSAGE}}
+      <form action="/login" method="post" class="panel">
         <div class="form-grid">
           <div>
             <label for="email">Email</label>
@@ -27,18 +27,9 @@
         </div>
         <div class="form-buttons">
           <button type="submit" class="btn-primary">Login</button>
+          <a class="btn-secondary" href="/register">Create Account</a>
         </div>
       </form>
-
-      <div class="panel">
-        <h3>Demo accounts</h3>
-        <ul>
-          <li>fleetmanager@transitops.com / Fleet@2026</li>
-          <li>driver@transitops.com / Driver@2026</li>
-          <li>safety@transitops.com / Safety@2026</li>
-          <li>analyst@transitops.com / Analyst@2026</li>
-        </ul>
-      </div>
     </div>
   </div>
 </body>

@@ -1,58 +1,39 @@
-package model;
-
-import java.time.LocalDate;
+package com.transitops.model;
 
 public class Vehicle {
-
-    private int vehicleId;
-    private String vehicleNumber;
-    private String vehicleType;      // BUS, VAN, TRUCK, CAR
-    private String make;
+    private String registrationNumber;
+    private String name;
     private String model;
-    private int manufactureYear;
-    private int capacity;
-    private String fuelType;         // DIESEL, PETROL, CNG, ELECTRIC
-    private int odometerKm;
-    private LocalDate purchaseDate;
-    private LocalDate insuranceExpiry;
-    private LocalDate fitnessExpiry;
-    private String status;           // ACTIVE, IN_MAINTENANCE, INACTIVE
-    private Integer assignedDriverId;
-    private String assignedDriverName; // populated via join for display only
+    private String type;
+    private String capacity;
+    private String status;
 
     public Vehicle() {
     }
 
-    public int getVehicleId() {
-        return vehicleId;
+    public Vehicle(String registrationNumber, String name, String model, String type, String capacity, String status) {
+        this.registrationNumber = registrationNumber;
+        this.name = name;
+        this.model = model;
+        this.type = type;
+        this.capacity = capacity;
+        this.status = status;
     }
 
-    public void setVehicleId(int vehicleId) {
-        this.vehicleId = vehicleId;
+    public String getRegistrationNumber() {
+        return registrationNumber;
     }
 
-    public String getVehicleNumber() {
-        return vehicleNumber;
+    public void setRegistrationNumber(String registrationNumber) {
+        this.registrationNumber = registrationNumber;
     }
 
-    public void setVehicleNumber(String vehicleNumber) {
-        this.vehicleNumber = vehicleNumber;
+    public String getName() {
+        return name;
     }
 
-    public String getVehicleType() {
-        return vehicleType;
-    }
-
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
-    }
-
-    public String getMake() {
-        return make;
-    }
-
-    public void setMake(String make) {
-        this.make = make;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getModel() {
@@ -63,60 +44,20 @@ public class Vehicle {
         this.model = model;
     }
 
-    public int getManufactureYear() {
-        return manufactureYear;
+    public String getType() {
+        return type;
     }
 
-    public void setManufactureYear(int manufactureYear) {
-        this.manufactureYear = manufactureYear;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public int getCapacity() {
+    public String getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
+    public void setCapacity(String capacity) {
         this.capacity = capacity;
-    }
-
-    public String getFuelType() {
-        return fuelType;
-    }
-
-    public void setFuelType(String fuelType) {
-        this.fuelType = fuelType;
-    }
-
-    public int getOdometerKm() {
-        return odometerKm;
-    }
-
-    public void setOdometerKm(int odometerKm) {
-        this.odometerKm = odometerKm;
-    }
-
-    public LocalDate getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(LocalDate purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public LocalDate getInsuranceExpiry() {
-        return insuranceExpiry;
-    }
-
-    public void setInsuranceExpiry(LocalDate insuranceExpiry) {
-        this.insuranceExpiry = insuranceExpiry;
-    }
-
-    public LocalDate getFitnessExpiry() {
-        return fitnessExpiry;
-    }
-
-    public void setFitnessExpiry(LocalDate fitnessExpiry) {
-        this.fitnessExpiry = fitnessExpiry;
     }
 
     public String getStatus() {
@@ -125,21 +66,5 @@ public class Vehicle {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Integer getAssignedDriverId() {
-        return assignedDriverId;
-    }
-
-    public void setAssignedDriverId(Integer assignedDriverId) {
-        this.assignedDriverId = assignedDriverId;
-    }
-
-    public String getAssignedDriverName() {
-        return assignedDriverName;
-    }
-
-    public void setAssignedDriverName(String assignedDriverName) {
-        this.assignedDriverName = assignedDriverName;
     }
 }
