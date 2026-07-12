@@ -30,7 +30,7 @@ public class TransitOpsServer {
     private static final Path WEB_ROOT = Paths.get("WebContent").toAbsolutePath().normalize();
     private static final Path DATA_DIR = Paths.get("data").toAbsolutePath().normalize();
     private static final Map<String, User> SESSIONS = new HashMap<>();
-    private static final AuthService AUTH_SERVICE = new AuthService(DATA_DIR.resolve("users.txt"));
+    private static final AuthService AUTH_SERVICE = new AuthService(DATA_DIR.resolve("users.db"));
     private static final VehicleService VEHICLE_SERVICE = new VehicleService(DATA_DIR.resolve("vehicles.txt"));
     private static final DriverService DRIVER_SERVICE = new DriverService(DATA_DIR.resolve("drivers.txt"));
     private static final List<MaintenanceRecord> MAINTENANCE_RECORDS = new ArrayList<>();
@@ -145,11 +145,20 @@ server.createContext("/drivers", new DriverHandler());
             String fullName = form.getOrDefault("fullName", "").trim();
             String email = form.getOrDefault("email", "").trim();
             String password = form.getOrDefault("password", "").trim();
-            String role = form.getOrDefault("role", "Fleet Manager").trim();
+            String confirmPassword = form.getOrDefault("confirmPassword", "").trim();
+            String role = form.getOrDefault("role", "Admin").trim();
 
-            if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 String html = Files.readString(WEB_ROOT.resolve("register.html"));
                 html = html.replace("{{MESSAGE}}", "<p class=\"message error\">Please complete all fields.</p>")
+                        .replace("{{FORM_ACTION}}", "/register");
+                sendText(exchange, 400, html);
+                return;
+            }
+
+            if (!password.equals(confirmPassword)) {
+                String html = Files.readString(WEB_ROOT.resolve("register.html"));
+                html = html.replace("{{MESSAGE}}", "<p class=\"message error\">Passwords do not match.</p>")
                         .replace("{{FORM_ACTION}}", "/register");
                 sendText(exchange, 400, html);
                 return;

@@ -88,6 +88,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid rgba(124, 58, 237
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 1rem; }
 .form-grid > div { display: flex; flex-direction: column; }
 label { font-weight: 600; margin-bottom: 0.35rem; }
+.field-hint { display: block; margin-top: 0.35rem; color: var(--muted); font-size: 0.9rem; }
 .feature-grid { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
 .feature-card {
   display: block;
@@ -102,6 +103,14 @@ label { font-weight: 600; margin-bottom: 0.35rem; }
 .message.success { background: #ecfdf3; color: #166534; }
 .message.error { background: #fef2f2; color: #991b1b; }
 .auth-card { max-width: 720px; margin: 2rem auto; }
+.auth-card .panel { margin-top: 1.2rem; }
+.auth-footer {
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 600;
+}
+.auth-footer a { color: var(--primary); }
 .status.available,
 .status.active {
   background: rgba(22, 163, 74, 0.12);

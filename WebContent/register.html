@@ -28,13 +28,16 @@
             <input type="password" id="password" name="password" required>
           </div>
           <div>
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+          </div>
+          <div>
             <label for="role">Role</label>
-            <select id="role" name="role">
-              <option>Fleet Manager</option>
-              <option>Driver</option>
-              <option>Safety Officer</option>
-              <option>Financial Analyst</option>
+            <select id="role" name="role" required>
+              <option value="Admin">Admin / Manager</option>
+              <option value="Driver">Driver</option>
             </select>
+            <small class="field-hint">Admin / Manager can view and edit records.</small>
           </div>
         </div>
         <div class="form-buttons">
@@ -42,6 +45,7 @@
           <a class="btn-secondary" href="/login">Back to Login</a>
         </div>
       </form>
+      <p class="auth-footer">Already have an account? <a href="/login">Login here</a></p>
     </div>
   </div>
 </body>
