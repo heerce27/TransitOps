@@ -5,7 +5,6 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.transitops.model.User;
 import com.transitops.service.AuthService;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,7 +14,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,12 +25,14 @@ public class TransitOpsServer {
     private static final Path WEB_ROOT = Paths.get("WebContent").toAbsolutePath().normalize();
     private static final Map<String, User> SESSIONS = new HashMap<>();
     private static final AuthService AUTH_SERVICE = new AuthService();
+    private static final List<MaintenanceRecord> MAINTENANCE_RECORDS = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/", new StaticFileHandler("index.html"));
         server.createContext("/login", new LoginHandler());
         server.createContext("/dashboard", new DashboardHandler());
+        server.createContext("/maintenance", new MaintenanceHandler());
         server.createContext("/logout", new LogoutHandler());
         server.setExecutor(null);
         server.start();
@@ -114,6 +117,57 @@ public class TransitOpsServer {
         }
     }
 
+    private static class MaintenanceHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            User user = getAuthenticatedUser(exchange);
+            if (user == null) {
+                exchange.getResponseHeaders().add("Location", "/login");
+                sendText(exchange, 303, "Please log in first");
+                return;
+            }
+
+            if ("GET".equals(exchange.getRequestMethod())) {
+                String html = Files.readString(WEB_ROOT.resolve("maintenance.html"));
+                html = html.replace("{{USER_NAME}}", user.getName())
+                        .replace("{{USER_ROLE}}", user.getRole())
+                        .replace("{{USER_EMAIL}}", user.getEmail())
+                        .replace("{{MESSAGE}}", "")
+                        .replace("{{MAINTENANCE_LIST}}", buildMaintenanceList());
+                sendText(exchange, 200, html);
+                return;
+            }
+
+            if ("POST".equals(exchange.getRequestMethod())) {
+                Map<String, String> form = readForm(exchange);
+                String vehicle = form.getOrDefault("vehicle", "").trim();
+                String title = form.getOrDefault("title", "").trim();
+                String date = form.getOrDefault("date", "").trim();
+                String description = form.getOrDefault("description", "").trim();
+                String status = form.getOrDefault("status", "Scheduled").trim();
+
+                String message;
+                if (vehicle.isEmpty() || title.isEmpty()) {
+                    message = "<p>Please enter both vehicle and maintenance title.</p>";
+                } else {
+                    MAINTENANCE_RECORDS.add(new MaintenanceRecord(vehicle, title, date, description, status));
+                    message = "<p>Maintenance request saved successfully.</p>";
+                }
+
+                String html = Files.readString(WEB_ROOT.resolve("maintenance.html"));
+                html = html.replace("{{USER_NAME}}", user.getName())
+                        .replace("{{USER_ROLE}}", user.getRole())
+                        .replace("{{USER_EMAIL}}", user.getEmail())
+                        .replace("{{MESSAGE}}", message)
+                        .replace("{{MAINTENANCE_LIST}}", buildMaintenanceList());
+                sendText(exchange, 200, html);
+                return;
+            }
+
+            sendText(exchange, 405, "Method not allowed");
+        }
+    }
+
     private static class LogoutHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -130,6 +184,34 @@ public class TransitOpsServer {
             exchange.getResponseHeaders().add("Location", "/login");
             sendText(exchange, 303, "Logged out");
         }
+    }
+
+    private static String buildMaintenanceList() {
+        if (MAINTENANCE_RECORDS.isEmpty()) {
+            return "<li>No maintenance records yet.</li>";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (MaintenanceRecord record : MAINTENANCE_RECORDS) {
+            builder.append("<li>")
+                    .append(escapeHtml(record.vehicle))
+                    .append(" - ")
+                    .append(escapeHtml(record.title))
+                    .append(" | Date: ")
+                    .append(escapeHtml(record.date))
+                    .append(" | Status: ")
+                    .append(escapeHtml(record.status))
+                    .append("</li>");
+        }
+        return builder.toString();
+    }
+
+    private static String escapeHtml(String value) {
+        return value == null ? "" : value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#x27;");
     }
 
     private static User getAuthenticatedUser(HttpExchange exchange) {
@@ -187,6 +269,22 @@ public class TransitOpsServer {
         exchange.sendResponseHeaders(statusCode, data.length);
         try (OutputStream outputStream = exchange.getResponseBody()) {
             outputStream.write(data);
+        }
+    }
+
+    private static class MaintenanceRecord {
+        private final String vehicle;
+        private final String title;
+        private final String date;
+        private final String description;
+        private final String status;
+
+        private MaintenanceRecord(String vehicle, String title, String date, String description, String status) {
+            this.vehicle = vehicle;
+            this.title = title;
+            this.date = date;
+            this.description = description;
+            this.status = status;
         }
     }
 }
