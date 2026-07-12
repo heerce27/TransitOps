@@ -32,7 +32,8 @@ public class TransitOpsServer {
         server.createContext("/", new StaticFileHandler("index.html"));
         server.createContext("/login", new LoginHandler());
         server.createContext("/dashboard", new DashboardHandler());
-        server.createContext("/maintenance", new MaintenanceHandler());
+server.createContext("/maintenance", new MaintenanceHandler());
+server.createContext("/fuel", new StaticFileHandler("fuel.html"));
         server.createContext("/logout", new LogoutHandler());
         server.setExecutor(null);
         server.start();

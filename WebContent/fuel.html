@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Management | TransitOps</title>
+    <style>
+        :root {
+            --bg: #f4f7fb;
+            --card: #ffffff;
+            --primary: #1f6feb;
+            --primary-dark: #164ea7;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #dbe4f0;
+            --danger: #dc2626;
+            --success: #16a34a;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: #111827;
+            color: white;
+            padding: 24px 16px;
+        }
+
+        .sidebar h2 { margin-top: 0; font-size: 24px; }
+        .sidebar a {
+            display: block;
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+        .sidebar a.active, .sidebar a:hover { background: #1f2937; color: white; }
+
+        .main-content { flex: 1; padding: 24px; }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .page-header h1 { margin: 0 0 6px; }
+        .page-header p { margin: 0; color: var(--muted); }
+
+        .add-btn, .save-btn, .cancel-btn, .delete-btn {
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-weight: 600;
+        }
+        .add-btn, .save-btn { background: var(--primary); color: white; }
+        .cancel-btn { background: #e5e7eb; color: var(--text); }
+        .delete-btn { background: #fee2e2; color: var(--danger); }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .summary-card, .panel, .table-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .summary-card h3 { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
+        .summary-card h2 { margin: 0; font-size: 24px; }
+
+        .panel { margin-bottom: 20px; }
+        .panel h3 { margin-top: 0; }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        label { display: block; margin-bottom: 6px; font-weight: 600; }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        textarea { min-height: 90px; resize: vertical; }
+        .form-actions { display: flex; gap: 10px; margin-top: 16px; }
+
+        .search-section {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .search-section input { flex: 1; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; }
+        th { background: #f9fafb; }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; min-height: auto; }
+            .summary-grid, .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>🚛 TransitOps</h2>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="vehicles.html">Vehicles</a>
+            <a href="drivers.html">Drivers</a>
+            <a href="trips.html">Trips</a>
+            <a href="maintenance.html">Maintenance</a>
+            <a href="fuel.html" class="active">Fuel</a>
+            <a href="expenses.html">Expenses</a>
+            <a href="reports.html">Reports</a>
+            <a href="login.html">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1>Fuel Management ⛽</h1>
+                <p>Track vehicle fuel usage, costs, and refill history.</p>
+            </div>
+            <button class="add-btn" id="toggleFormBtn">+ Add Fuel Entry</button>
+        </div>
+
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Entries</h3>
+                <h2 id="totalEntries">0</h2>
+            </div>
+            <div class="summary-card">
+                <h3>Total Cost</h3>
+                <h2 id="totalCost">₹0</h2>
+            </div>
+            <div class="summary-card">
+                <h3>Total Liters</h3>
+                <h2 id="totalLiters">0 L</h2>
+            </div>
+        </div>
+
+        <div class="panel" id="formPanel" style="display:none;">
+            <h3>Add Fuel Entry</h3>
+            <form id="fuelForm">
+                <div class="form-grid">
+                    <div>
+                        <label for="vehicleNumber">Vehicle</label>
+                        <select id="vehicleNumber" required>
+                            <option value="">Select Vehicle</option>
+                            <option value="Truck-01">Truck-01</option>
+                            <option value="Truck-02">Truck-02</option>
+                            <option value="Van-05">Van-05</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="fuelType">Fuel Type</label>
+                        <select id="fuelType" required>
+                            <option value="">Select Type</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="Petrol">Petrol</option>
+                            <option value="CNG">CNG</option>
+                            <option value="Electric">Electric</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="quantity">Quantity (Liters)</label>
+                        <input type="number" id="quantity" min="1" step="0.1" required>
+                    </div>
+                    <div>
+                        <label for="cost">Cost (₹)</label>
+                        <input type="number" id="cost" min="1" step="0.01" required>
+                    </div>
+                    <div>
+                        <label for="entryDate">Date</label>
+                        <input type="date" id="entryDate" required>
+                    </div>
+                    <div>
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" placeholder="Refill / service / route note"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="save-btn">Save Entry</button>
+                    <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="search-section">
+            <input type="text" id="searchFuel" placeholder="Search by vehicle or notes">
+        </div>
+
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Fuel Type</th>
+                        <th>Quantity</th>
+                        <th>Cost</th>
+                        <th>Date</th>
+                        <th>Notes</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="fuelTableBody"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const initialEntries = [
+            { vehicleNumber: 'Truck-01', fuelType: 'Diesel', quantity: 120.5, cost: 14500, date: '2026-07-10', notes: 'Full tank refill' },
+            { vehicleNumber: 'Van-05', fuelType: 'Petrol', quantity: 48, cost: 5600, date: '2026-07-11', notes: 'City route refill' }
+        ];
+
+        let fuelEntries = [...initialEntries];
+        const fuelTableBody = document.getElementById('fuelTableBody');
+        const searchInput = document.getElementById('searchFuel');
+        const formPanel = document.getElementById('formPanel');
+        const fuelForm = document.getElementById('fuelForm');
+
+        function formatCurrency(value) {
+            return '₹' + Number(value).toLocaleString('en-IN');
+        }
+
+        function renderEntries() {
+            const query = searchInput.value.toLowerCase();
+            const filtered = fuelEntries.filter(entry =>
+                entry.vehicleNumber.toLowerCase().includes(query) ||
+                entry.notes.toLowerCase().includes(query)
+            );
+
+            fuelTableBody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                fuelTableBody.innerHTML = '<tr><td colspan="7">No fuel entries found.</td></tr>';
+                return;
+            }
+
+            filtered.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.vehicleNumber}</td>
+                    <td>${entry.fuelType}</td>
+                    <td>${entry.quantity} L</td>
+                    <td>${formatCurrency(entry.cost)}</td>
+                    <td>${entry.date}</td>
+                    <td>${entry.notes}</td>
+                    <td>
+                        <button class="delete-btn" onclick="deleteEntry(${index})">Delete</button>
+                    </td>
+                `;
+                fuelTableBody.appendChild(row);
+            });
+        }
+
+        function updateSummary() {
+            document.getElementById('totalEntries').textContent = fuelEntries.length;
+            document.getElementById('totalCost').textContent = formatCurrency(fuelEntries.reduce((sum, entry) => sum + entry.cost, 0));
+            document.getElementById('totalLiters').textContent = fuelEntries.reduce((sum, entry) => sum + entry.quantity, 0).toFixed(1) + ' L';
+        }
+
+        function deleteEntry(index) {
+            fuelEntries.splice(index, 1);
+            renderEntries();
+            updateSummary();
+        }
+
+        document.getElementById('toggleFormBtn').addEventListener('click', () => {
+            formPanel.style.display = formPanel.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            formPanel.style.display = 'none';
+            fuelForm.reset();
+        });
+
+        fuelForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const newEntry = {
+                vehicleNumber: document.getElementById('vehicleNumber').value,
+                fuelType: document.getElementById('fuelType').value,
+                quantity: parseFloat(document.getElementById('quantity').value),
+                cost: parseFloat(document.getElementById('cost').value),
+                date: document.getElementById('entryDate').value,
+                notes: document.getElementById('notes').value || 'No notes'
+            };
+
+            fuelEntries.push(newEntry);
+            fuelForm.reset();
+            formPanel.style.display = 'none';
+            renderEntries();
+            updateSummary();
+        });
+
+        searchInput.addEventListener('input', renderEntries);
+        renderEntries();
+        updateSummary();
+    </script>
+</body>
+</html>
