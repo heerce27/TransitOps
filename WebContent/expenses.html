@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Expense Management | TransitOps</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <h2>🚛 TransitOps</h2>
+
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="vehicles.html">Vehicles</a>
+            <a href="drivers.html">Drivers</a>
+            <a href="trips.html">Trips</a>
+            <a href="maintenance.html">Maintenance</a>
+            <a href="fuel.html">Fuel</a>
+            <a href="expenses.html" class="active">Expenses</a>
+            <a href="reports.html">Reports</a>
+            <a href="login.html">Logout</a>
+        </nav>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <div class="page-header">
+
+            <div>
+                <h1>Expense Management 💰</h1>
+                <p>Track and manage transport operational expenses.</p>
+            </div>
+
+            <button class="add-btn" onclick="showExpenseForm()">
+                + Add Expense
+            </button>
+
+        </div>
+
+
+        <!-- Expense Summary -->
+        <div class="expense-summary">
+
+            <div class="summary-card">
+                <h3>Total Expenses</h3>
+                <h2 id="totalExpense">₹0</h2>
+            </div>
+
+            <div class="summary-card">
+                <h3>Total Records</h3>
+                <h2 id="totalRecords">0</h2>
+            </div>
+
+        </div>
+
+
+        <!-- Add Expense Form -->
+        <div class="expense-form" id="expenseForm" style="display: none;">
+
+            <h2>Add New Expense</h2>
+
+            <form id="addExpenseForm">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>Vehicle</label>
+
+                        <select id="vehicle" required>
+                            <option value="">Select Vehicle</option>
+                            <option value="Van-05">Van-05</option>
+                            <option value="Truck-01">Truck-01</option>
+                            <option value="Truck-02">Truck-02</option>
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label>Expense Category</label>
+
+                        <select id="expenseCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Fuel">Fuel</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Toll Charges">Toll Charges</option>
+                            <option value="Repairs">Repairs</option>
+                            <option value="Insurance">Insurance</option>
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label>Amount</label>
+
+                        <input type="number"
+                               id="expenseAmount"
+                               min="1"
+                               placeholder="Enter amount"
+                               required>
+                    </div>
+
+
+                    <div>
+                        <label>Date</label>
+
+                        <input type="date"
+                               id="expenseDate"
+                               required>
+                    </div>
+
+
+                    <div>
+                        <label>Description</label>
+
+                        <input type="text"
+                               id="expenseDescription"
+                               placeholder="Enter expense description"
+                               required>
+                    </div>
+
+                </div>
+
+
+                <div class="form-buttons">
+
+                    <button type="submit" class="save-btn">
+                        Save Expense
+                    </button>
+
+                    <button type="button"
+                            class="cancel-btn"
+                            onclick="hideExpenseForm()">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- Search and Filter -->
+        <div class="search-section">
+
+            <input type="text"
+                   id="searchExpense"
+                   placeholder="🔍 Search expense..."
+                   onkeyup="searchExpenses()">
+
+
+            <select id="categoryFilter"
+                    onchange="filterExpenses()">
+
+                <option value="All">All Categories</option>
+                <option value="Fuel">Fuel</option>
+                <option value="Maintenance">Maintenance</option>
+                <option value="Toll Charges">Toll Charges</option>
+                <option value="Repairs">Repairs</option>
+                <option value="Insurance">Insurance</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Expense Table -->
+        <div class="table-container">
+
+            <table id="expenseTable">
+
+                <thead>
+
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="expenseTableBody">
+
+                    <!-- Sample Expense -->
+
+                    <tr>
+
+                        <td>Van-05</td>
+
+                        <td>Maintenance</td>
+
+                        <td>₹2500</td>
+
+                        <td>2026-07-10</td>
+
+                        <td>Oil Change</td>
+
+                        <td>
+
+                            <button class="edit-btn"
+                                    onclick="editExpense(this)">
+                                Edit
+                            </button>
+
+                            <button class="delete-btn"
+                                    onclick="deleteExpense(this)">
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+
+    <!-- JavaScript -->
+    <script src="js/expenses.js"></script>
+
+</body>
+
+</html>
