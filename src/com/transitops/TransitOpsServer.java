@@ -46,6 +46,8 @@ public class TransitOpsServer {
         server.createContext("/dashboard", new DashboardHandler());
 server.createContext("/maintenance", new MaintenanceHandler());
 server.createContext("/fuel", new StaticFileHandler("fuel.html"));
+server.createContext("/expenses", new StaticFileHandler("expenses.html"));
+server.createContext("/reports", new StaticFileHandler("reports.html"));
 server.createContext("/trips", new TripHandler());
 server.createContext("/vehicles", new VehicleHandler());
 server.createContext("/drivers", new DriverHandler());
