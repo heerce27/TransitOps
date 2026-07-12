@@ -1,7 +1,7 @@
-package dao;
+package com.transitops.dao;
 
-import model.Vehicle;
-import util.DBConnectionUtil;
+import com.transitops.model.Vehicle;
+import com.transitops.util.DBConnectionUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public class VehicleDAO {
         ps.setString(3, v.getMake());
         ps.setString(4, v.getModel());
         ps.setInt(5, v.getManufactureYear());
-        ps.setInt(6, v.getCapacity());
+        ps.setString(6, v.getCapacity());
         ps.setString(7, v.getFuelType());
         ps.setInt(8, v.getOdometerKm());
         ps.setDate(9, Date.valueOf(v.getPurchaseDate()));
@@ -135,7 +135,7 @@ public class VehicleDAO {
         v.setMake(rs.getString("make"));
         v.setModel(rs.getString("model"));
         v.setManufactureYear(rs.getInt("manufacture_year"));
-        v.setCapacity(rs.getInt("capacity"));
+        v.setCapacity(rs.getString("capacity"));
         v.setFuelType(rs.getString("fuel_type"));
         v.setOdometerKm(rs.getInt("odometer_km"));
         v.setPurchaseDate(rs.getDate("purchase_date").toLocalDate());

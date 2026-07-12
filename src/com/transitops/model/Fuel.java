@@ -1,4 +1,4 @@
-package com.transitops.service;
+package com.transitops.model;
 
 public class Fuel {
     private String vehicleNumber;

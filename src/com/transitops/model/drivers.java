@@ -1,7 +1,6 @@
 package com.transitops.model;
 
-public class Driver {
-
+class DriverLegacy {
     private final String name;
     private final String licenseNumber;
     private final String licenseCategory;
@@ -10,11 +9,10 @@ public class Driver {
     private final int safetyScore;
     private final String status;
 
-    public Driver(String name, String licenseNumber,
-                  String licenseCategory, String licenseExpiryDate,
-                  String contactNumber, int safetyScore,
-                  String status) {
-
+    DriverLegacy(String name, String licenseNumber,
+                 String licenseCategory, String licenseExpiryDate,
+                 String contactNumber, int safetyScore,
+                 String status) {
         this.name = name;
         this.licenseNumber = licenseNumber;
         this.licenseCategory = licenseCategory;
